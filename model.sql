@@ -11,8 +11,8 @@ INSERT INTO Users (username, pword) VALUES ('bob', 'pass');
 
 CREATE TABLE Groups (
   groupId INT NOT NULL AUTO_INCREMENT,
-  inviteCode VARCHAR(32) UNIQUE NOT NULL,
   groupName VARCHAR(32) NOT NULL,
+  inviteCode VARCHAR(32) UNIQUE NOT NULL,
   PRIMARY KEY (groupId)
 );
 
@@ -22,10 +22,11 @@ CREATE TABLE CanAccess (
   userId INT NOT NULL,
   groupId INT NOT NULL,
   FOREIGN KEY (userId) REFERENCES Users (userId),
-  FOREIGN KEY (groupId) REFERENCES Groups (groupId)
+  FOREIGN KEY (groupId) REFERENCES Groups (groupId),
+  PRIMARY KEY (userId, groupId)
 );
 
-INSERT INTO CanAccess (1,1);
+INSERT INTO CanAccess VALUES (1,1);
 
 CREATE TABLE Persons (
   personId INT NOT NULL AUTO_INCREMENT,
