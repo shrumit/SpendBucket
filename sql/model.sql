@@ -28,6 +28,7 @@ CREATE TABLE CanAccess (
 
 INSERT INTO CanAccess VALUES (1,1);
 
+-- Persons are strong entities for convenience.
 CREATE TABLE Persons (
   personId INT NOT NULL AUTO_INCREMENT,
   groupId INT NOT NULL,
