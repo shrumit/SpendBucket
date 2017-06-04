@@ -8,6 +8,7 @@ import (
     "github.com/dgrijalva/jwt-go"
      _ "github.com/go-sql-driver/mysql"
      "github.com/gorilla/schema"
+    "golang.org/x/crypto/bcrypt"
     "log"
     "net/http"
     "strconv"
@@ -139,6 +140,7 @@ func main() {
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
+
     username := r.PostFormValue("username")
     pword := r.PostFormValue("password")
     fmt.Println(username, pword)
@@ -146,10 +148,14 @@ func login(w http.ResponseWriter, r *http.Request) {
     if err == sql.ErrNoRows { 
         // username not found
         failureResponder(w,r,err,"Incorrect credentials.")
+        return
     } else if err != nil {
         failureResponder(w,r,err,"Server error.")
-    } else if m.Pword != pword {
-        // password doesn't match
+        return
+    }
+
+    err = bcrypt.CompareHashAndPassword([]byte(m.Pword), []byte(pword))
+    if err != nil {
         failureResponder(w,r,err,"Incorrect credentials.")
     } else {
         tokenResponder(w, r, m.UserId)
@@ -157,8 +163,16 @@ func login(w http.ResponseWriter, r *http.Request) {
 }
 
 func register(w http.ResponseWriter, r *http.Request) {
-    model := &UserModel{Username: r.PostFormValue("username"), Pword: r.PostFormValue("password")}
-    err := dc.CreateUser(model)
+    
+    password := []byte(r.PostFormValue("password"))
+    hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+    if err != nil {
+        failureResponder(w,r,err,"Error generating hashed password")
+        return
+    }
+    fmt.Println(string(hashedPassword))
+    model := &UserModel{Username: r.PostFormValue("username"), Pword: string(hashedPassword)}
+    err = dc.CreateUser(model)
     if err != nil {
         failureResponder(w, r, err, "Registration error.")
         return
@@ -225,11 +239,15 @@ func getGroups(w http.ResponseWriter, r *http.Request) {
 func enterGroupInvite(w http.ResponseWriter, r *http.Request) {
     m, err := dc.GetGroupByInvite(r.PostFormValue("inviteCode"))
     if err != nil {
-        failureResponder(w,r,err, "Unable to enter group.")
+        failureResponder(w,r,err, "Unable to parse invite code.")
         return
     }
     
-    dc.CreateAccess(getCtxUid(r), m.GroupId)       
+    err = dc.CreateAccess(getCtxUid(r), m.GroupId)
+    if err != nil {
+        failureResponder(w,r,err,"Unable to enter group.")
+        return
+    }
 
     res := make(map[string]interface{})
     res["group"] = m

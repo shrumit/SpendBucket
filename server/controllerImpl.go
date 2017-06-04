@@ -6,7 +6,7 @@ package main
 import (
     "database/sql"
     "errors"
-    "fmt"
+    // "fmt"
 )
 
 // Initialized with a sql.DB driver
@@ -28,7 +28,6 @@ func (dc *DataControllerMysql) CreateUser(model *UserModel) (err error) {
 
 func (dc *DataControllerMysql) GetUser(username string) (model *UserModel, err error) {
     model = &UserModel{}
-    fmt.Println("")
     err = dc.db.QueryRow("select * from Users where username=?", username).Scan(&model.UserId, &model.Username, &model.Pword)
     return
 }
@@ -42,7 +41,7 @@ func (dc *DataControllerMysql) CreateGroup(model *GroupModel, userId int) (err e
     }
     defer tx.Rollback()
 
-    res, err := tx.Exec("insert into Groups (inviteCode, groupName) values (?,?)", model.InviteCode, model.GroupName)
+    res, err := tx.Exec("insert into Groups (inviteCode, groupName, createdBy) values (?,?,?)", model.InviteCode, model.GroupName, userId)
     if err != nil {
         return
     }
@@ -70,7 +69,7 @@ func (dc *DataControllerMysql) GetGroupById(groupId int) (model *GroupModel, err
 
 func (dc *DataControllerMysql) GetGroupByInvite(inviteCode string) (model *GroupModel, err error) {
     model = &GroupModel{}
-    err = dc.db.QueryRow("select * from Groups where inviteCode=?", inviteCode).Scan(&model.GroupId, &model.GroupName, &model.InviteCode)
+    err = dc.db.QueryRow("select * from Groups where inviteCode=?", inviteCode).Scan(&model.GroupId, &model.GroupName, &model.InviteCode, &model.CreatedBy)
     return
 }
 

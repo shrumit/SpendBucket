@@ -10,6 +10,7 @@ type GroupModel struct {
     GroupId    int      `json:"groupId"`
     GroupName  string   `json:"groupName"`
     InviteCode string   `json:"inviteCode"`
+    CreatedBy  int      `json:"createdBy"`
 }
 
 type PersonModel struct {
