@@ -22,20 +22,21 @@
  		</mu-dialog>
 
  		<!-- persons table -->
-		<mu-table :selectable=false :showCheckbox=false class="section-table">
-			<mu-thead>
-				<mu-tr>
-					<mu-th>Person</mu-th>
-					<mu-th>Balance</mu-th>
-				</mu-tr>
-			</mu-thead>
-			<mu-tbody>
-				<mu-tr v-for="p in persons" :key="p.personId">
-					<mu-td>{{p.personName}}</mu-td>
-					<mu-td>{{p.balanceText}}</mu-td>
-				</mu-tr>
-			</mu-tbody>
-		</mu-table>
+		<md-table class="section-table">
+			<md-table-header>
+				<md-table-row>
+					<md-table-head>Person</md-table-head>
+					<md-table-head md-numeric>Balance</md-table-head>
+				</md-table-row>
+			</md-table-header>
+			<md-table-body>
+				<md-table-row v-for="p in persons" :key="p.personId">
+					<md-table-cell>{{p.personName}}</md-table-cell>
+					<md-table-cell md-numeric>{{p.balanceText}}</md-table-cell>
+				</md-table-row>
+			</md-table-body>
+		</md-table>
+
 
 	</mu-paper>
 </div>
@@ -57,9 +58,9 @@ export default {
 			return this.$store.state.selectedGroupData.persons.map(function(elem){
 				elem.balance = parseFloat(elem.balance)
 				if (elem.balance < 0) {
-					elem.balanceText = 'Owes $' + (elem.balance*-1).toFixed(2)
+					elem.balanceText = 'owes ' + (elem.balance*-1).toFixed(2)
 				} else {
-					elem.balanceText = 'Is owed $' + elem.balance.toFixed(2)
+					elem.balanceText = 'is owed ' + elem.balance.toFixed(2)
 				}
 				return elem
 			})

@@ -101,6 +101,11 @@ h2 {
 	margin: 10px;
 }
 
+.md-table-head-text {
+	color: #7e848c;
+	font-weight: 400;
+}
+
 /* dash information text */
 
 .dash-info {

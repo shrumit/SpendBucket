@@ -11,34 +11,29 @@
 		</div>
 
  		<!-- transaction table -->
-
-		<mu-table :selectable=false :showCheckbox=false class="section-table">
-			<mu-thead>
-				<mu-tr>
-					<mu-th>Title</mu-th>
-					<mu-th>Amount</mu-th>
-					<mu-th>Date</mu-th>
-					<mu-th>Paid By</mu-th>
-					<mu-th>Shared By</mu-th>
-					<mu-th class="mu-checkbox-col"></mu-th>
-				</mu-tr>
-			</mu-thead>
-			<mu-tbody>
-				<mu-tr v-for="t in trans" :key="t.transId">
-					<mu-td>{{t.title}}</mu-td>
-					<mu-td>{{t.amount}}</mu-td>
-					<mu-td>{{t.transDate}}</mu-td>
-					<mu-td>{{t.paidBy_display}}</mu-td>
-					<mu-td>{{t.sharedBy_display}}</mu-td>
-					<mu-td style="padding:0px;">
-						<mu-icon-menu icon="edit" :anchorOrigin="leftTop" :targetOrigin="leftTop">
-							<!-- <mu-menu-item @click="editTransaction(t.transId)" title="Edit" /> -->
-							<mu-menu-item @click="deleteTransaction(t.transId)" title="Delete" />
-						</mu-icon-menu>
-					</mu-td>
-				</mu-tr>
-			</mu-tbody>
-		</mu-table>
+		<md-table class="section-table">
+			<md-table-header>
+				<md-table-row>
+					<md-table-head>Title</md-table-head>
+					<md-table-head>Amount</md-table-head>
+					<md-table-head>Date</md-table-head>
+					<md-table-head>Paid By</md-table-head>
+					<md-table-head>Shared By</md-table-head>
+				</md-table-row>
+			</md-table-header>
+			<md-table-body>
+				<md-table-row v-for="t in trans" :key="t.transId">
+					<md-table-cell>{{t.title}}</md-table-cell>
+					<md-table-cell md-numeric>{{t.amount}}</md-table-cell>
+					<md-table-cell>{{t.transDate}}</md-table-cell>
+					<md-table-cell>{{t.paidBy_display}}</md-table-cell>
+					<md-table-cell>{{t.sharedBy_display}}</md-table-cell>
+					<mu-icon-menu icon="edit" :anchorOrigin="leftTop" :targetOrigin="leftTop">
+						<mu-menu-item @click="deleteTransaction(t.transId)" title="Delete" />
+					</mu-icon-menu>
+				</md-table-row>
+			</md-table-body>
+		</md-table>
 
 		<!-- new transaction dialog -->
 		<mu-dialog :open="dialog" @close="closeDialog">
@@ -63,6 +58,7 @@
 
 
 	</mu-paper>
+
 </div>
 </template>
 
