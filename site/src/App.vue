@@ -35,7 +35,7 @@ export default {
 
 <style lang="less">
 body {
-	background-color: #ebf1e4;
+	background-color: #ebf1e4 !important;
 }
 
 #app {
