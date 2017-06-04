@@ -7,7 +7,7 @@ import (
     "fmt"
     "github.com/dgrijalva/jwt-go"
      _ "github.com/go-sql-driver/mysql"
-     "github.com/gorilla/schema"
+     // "github.com/gorilla/schema"
     "golang.org/x/crypto/bcrypt"
     "log"
     "net/http"
@@ -16,14 +16,15 @@ import (
 
 type ctxKey string
 var dc DataController
-var decoder = schema.NewDecoder()
+// var decoder = schema.NewDecoder()
 
 func index(w http.ResponseWriter, r *http.Request) {
-    if (r.URL.Path == "/") {
-        http.ServeFile(w,r,"apiTest.html")
-    } else {
-        failureResponder(w,r,nil,"Nonexistent endpoint")
-    }
+    // if (r.URL.Path == "/") {
+    //     http.ServeFile(w,r,"apiTest.html")
+    // } else {
+    //     failureResponder(w,r,nil,"Nonexistent endpoint")
+    // }
+    failureResponder(w,r,nil,"Nonexistent endpoint")
 }
 
 func getCtxUid(r *http.Request) int {
