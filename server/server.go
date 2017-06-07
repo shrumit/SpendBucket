@@ -7,7 +7,6 @@ import (
     "fmt"
     "github.com/dgrijalva/jwt-go"
      _ "github.com/go-sql-driver/mysql"
-     // "github.com/gorilla/schema"
     "golang.org/x/crypto/bcrypt"
     "log"
     "net/http"
@@ -16,14 +15,48 @@ import (
 
 type ctxKey string
 var dc DataController
-// var decoder = schema.NewDecoder()
+
+func main() {
+    log.Println("log test")
+    fmt.Println("fmt test")
+
+    // Start database connection
+    db, err := sql.Open("mysql", DSN)
+    if err != nil {
+        log.Fatal(err.Error())
+    }
+    defer db.Close()
+    err = db.Ping()
+    if err != nil {
+        log.Fatal(err.Error())
+    }
+
+    dc = &DataControllerMysql{db}
+
+    // Bind API endpoints to middleware and handler functions
+
+    http.HandleFunc("/",            index)
+    http.HandleFunc("/login",       login)
+    http.HandleFunc("/register",    register)
+
+    // Token verified endpoints
+    http.HandleFunc("/createGroup",         secureWrapper(createGroup))
+    http.HandleFunc("/enterGroupInvite",    secureWrapper(enterGroupInvite))
+    http.HandleFunc("/getGroups",           secureWrapper(getGroups))
+
+    // Token and groupId verified endpoints
+    http.HandleFunc("/getGroupData",        secureWrapper(groupWrapper(getGroupData)))
+    http.HandleFunc("/getUsernames",        secureWrapper(groupWrapper(getUsernames)))
+    http.HandleFunc("/addPerson",           secureWrapper(groupWrapper(addPerson)))
+    http.HandleFunc("/getPersons",          secureWrapper(groupWrapper(getPersons)))
+    http.HandleFunc("/getTransactions",     secureWrapper(groupWrapper(getTransactions)))
+    http.HandleFunc("/addTransaction",      secureWrapper(groupWrapper(addTransaction)))
+    http.HandleFunc("/deleteTransaction",   secureWrapper(groupWrapper(deleteTransaction)))
+
+    log.Fatal(http.ListenAndServe(":8081", nil))
+}
 
 func index(w http.ResponseWriter, r *http.Request) {
-    // if (r.URL.Path == "/") {
-    //     http.ServeFile(w,r,"apiTest.html")
-    // } else {
-    //     failureResponder(w,r,nil,"Nonexistent endpoint")
-    // }
     failureResponder(w,r,nil,"Nonexistent endpoint")
 }
 
@@ -36,8 +69,6 @@ func getCtxGid(r *http.Request) int {
     val, _ := r.Context().Value(ctxKey("gid")).(int)
     return val
 }
-
-// ----------------------------------
 
 // Parse and validate JWT
 func secureWrapper(h http.HandlerFunc) http.HandlerFunc {
@@ -100,45 +131,6 @@ func groupWrapper(h http.HandlerFunc) http.HandlerFunc {
     return fn
 }
 
-func main() {
-    log.Println("log test")
-    fmt.Println("fmt test")
-
-    // Start database connection
-    db, err := sql.Open("mysql", DSN)
-    if err != nil {
-        log.Fatal(err.Error())
-    }
-    defer db.Close()
-    err = db.Ping()
-    if err != nil {
-        log.Fatal(err.Error())
-    }
-
-    dc = &DataControllerMysql{db}
-
-    // Bind API endpoints to middleware and handler functions
-
-    http.HandleFunc("/",            index)
-    http.HandleFunc("/login",       login)
-    http.HandleFunc("/register",    register)
-
-    // Token verified endpoints
-    http.HandleFunc("/createGroup",         secureWrapper(createGroup))
-    http.HandleFunc("/enterGroupInvite",    secureWrapper(enterGroupInvite))
-    http.HandleFunc("/getGroups",           secureWrapper(getGroups))
-
-    // Token and groupId verified endpoints
-    http.HandleFunc("/getGroupData",        secureWrapper(groupWrapper(getGroupData)))
-    http.HandleFunc("/getUsernames",        secureWrapper(groupWrapper(getUsernames)))
-    http.HandleFunc("/addPerson",           secureWrapper(groupWrapper(addPerson)))
-    http.HandleFunc("/getPersons",          secureWrapper(groupWrapper(getPersons)))
-    http.HandleFunc("/getTransactions",     secureWrapper(groupWrapper(getTransactions)))
-    http.HandleFunc("/addTransaction",      secureWrapper(groupWrapper(addTransaction)))
-    http.HandleFunc("/deleteTransaction",   secureWrapper(groupWrapper(deleteTransaction)))
-
-    log.Fatal(http.ListenAndServe(":8081", nil))
-}
 
 func login(w http.ResponseWriter, r *http.Request) {
 
@@ -375,8 +367,6 @@ func deleteTransaction(w http.ResponseWriter, r *http.Request) {
 
     successResponder(w,r,nil,"")
 }
-
-
 
 
 // predefined response handlers

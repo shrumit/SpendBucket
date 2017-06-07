@@ -29,13 +29,3 @@ type TransactionModel struct {
     PaidBy    int     `json:"paidBy,omitempty"`
     SharedBy  []int   `json:"sharedBy,omitempty"`
 }
-
-// type TransactionModel struct {
-//     TransId   int     `json:transId,omitempty`
-//     Title     string  `json:title,omitempty`
-//     Amount    float64 `json:amount,omitempty`
-//     TransDate string  `json:transDate,omitempty`
-//     GroupId   int     `json:groupId,omitempty`
-//     PaidBy    int     `json:paidBy,omitempty`
-//     SharedBy  []int   `json:sharedBy,omitempty`
-// }

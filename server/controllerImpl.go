@@ -6,7 +6,6 @@ package main
 import (
     "database/sql"
     "errors"
-    // "fmt"
 )
 
 // Initialized with a sql.DB driver

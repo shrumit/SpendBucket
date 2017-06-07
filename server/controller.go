@@ -1,6 +1,6 @@
 package main
 
-// This interface allows for decoupling from the underlying database.
+// This interface allows the server to access the underlying database.
 
 // Create and Update functions take a *Model as input 
 // Create functions update the input *Model's index field upon successful insertion
@@ -29,10 +29,4 @@ type DataController interface {
     CreateTransaction(model *TransactionModel) error
     GetAllTransactions(groupId int) ([]*TransactionModel, error)
     DeleteTransaction(transId int, groupId int) error // groupId required for security
-
-    // TODO
-    // DeleteGroup(groupId int) error
-    // GetTransaction(transId int) (*TransactionModel, error)
-    // DeletePerson(personId int) error
-    // UpdateTransaction(model *TransactionModel) error
 }
