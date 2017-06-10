@@ -1,32 +1,29 @@
 # Spend Bucket
 
-## About
+*A full-stack RESTful single-page application to track shared expenses in a group of people.*
 
-A full-stack RESTful single-page application to track shared expenses in a group of people.
+## Server
 
-### Server
+Written with the intention of leveraging only the standard Go libraries, without 3rd-party frameworks or routers.
 
-Written with the intention of using only the standard Go libraries, without using 3rd-party frameworks or routers. Consequently, the only 3rd-party dependencies are `go-sql-driver/mysql` and `dgrijalva/jwt-go`.
+#### Compiling
 
-**Compiling**
+Ensure that the project directory is included in the GOPATH. Run `go install` in `server`.
 
-Ensure that the project directory is included in the GOPATH. Then run `go install` from the `server` directory.
+## Site
 
-### Site
+Built with Vue.js, Vuex and superagent; bundled using Webpack. Uses Material Design UI components from muse-ui and vue-material.
 
-Built with Vue.js and Vuex, and bundled using Webpack. The design (non-strictly) adheres to Material Design guidelines by using components from muse-ui and vue-material.
+#### Compiling
 
-**Compiling**
+Run `npm run build` in site directory to generate a production build in the `dist` directory.
 
-Run `npm run build` in site directory to generate a production build. Files in `dist` may then be served using a web server such as Nginx.
+## Database
 
+Schema is written for MySQL. Dummy data is encased in a MySQL Event that resets the dummy account to default every 10 minutes.
 
-### Database
-
-The schema is written for MySQL and can be loaded from `schema.sql` in the  `sql` directory. Dummy data is provided in `dummy.sql`, encased in a MySQL Event that resets the dummy account to default every 10 minutes.
-
-The server application is decoupled from the choice of data store. Simply implement the DataController interface found in `controller.go` . `controllerImpl.go` contains the current MySQL-targeted implementation.
+The choice of data store is completely decoupled from the server application and can be swapped for anything implementing the DataController interface in `controller.go`. The current MySQL controller can be found in `controllerImpl.go`.
 
 ## License
 
-GNU Affero GPLv3 licensed. See LICENSE for details.
+GNU AGPL v3
