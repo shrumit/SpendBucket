@@ -7,8 +7,6 @@
 		<template v-else>
 			<login></login>
 		</template>
-		<p>{{counter}}</p>
-
 	</div>
 </template>
 

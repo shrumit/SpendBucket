@@ -4,6 +4,7 @@
 		<p style="margin:0px; margin-bottom:-30px; text-align:right;">Beta</p>
 		<h1>Spend Bucket</h1>
 		<!-- <h4>Split expenses. Easily.</h4> -->
+		<a href="https://github.com/shrumit/spendbucket" target="_blank">Open Source</a>
 	</mu-content-block>
 
 	<mu-paper class="card" :zDepth=2>
