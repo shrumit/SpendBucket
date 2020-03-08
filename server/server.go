@@ -16,9 +16,11 @@ import (
 type ctxKey string
 var dc DataController
 
+// The following variables come from a secrets.go in this package: HmacSecret, DSN, Pepper
+
 func main() {
-    log.Println("log test")
     fmt.Println("fmt test")
+    log.Println("log test")
 
     // Start database connection
     db, err := sql.Open("mysql", DSN)
@@ -53,7 +55,7 @@ func main() {
     http.HandleFunc("/addTransaction",      secureWrapper(groupWrapper(addTransaction)))
     http.HandleFunc("/deleteTransaction",   secureWrapper(groupWrapper(deleteTransaction)))
 
-    log.Fatal(http.ListenAndServe(":8081", nil))
+    log.Println(http.ListenAndServe(":8081", nil))
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
@@ -138,7 +140,7 @@ func login(w http.ResponseWriter, r *http.Request) {
     pword := r.PostFormValue("password")
     fmt.Println(username, pword)
     m, err := dc.GetUser(username)
-    if err == sql.ErrNoRows { 
+    if err == sql.ErrNoRows {
         // username not found
         failureResponder(w,r,err,"Incorrect credentials.")
         return
@@ -156,7 +158,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 }
 
 func register(w http.ResponseWriter, r *http.Request) {
-    
+
     password := []byte(r.PostFormValue("password"))
     hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
     if err != nil {
@@ -235,7 +237,7 @@ func enterGroupInvite(w http.ResponseWriter, r *http.Request) {
         failureResponder(w,r,err, "Unable to parse invite code.")
         return
     }
-    
+
     err = dc.CreateAccess(getCtxUid(r), m.GroupId)
     if err != nil {
         failureResponder(w,r,err,"Unable to enter group.")
@@ -269,7 +271,7 @@ func getUsernames(w http.ResponseWriter, r *http.Request) {
 
     res := make(map[string]interface{})
     res["usernames"] = usernames
-    successResponder(w,r,res,"")    
+    successResponder(w,r,res,"")
 }
 
 func getPersons(w http.ResponseWriter, r *http.Request) {
@@ -326,8 +328,8 @@ func addTransaction(w http.ResponseWriter, r *http.Request) {
         return
     }
     m.GroupId = getCtxGid(r)
-    
-    
+
+
     // Add transaction
     fmt.Println(m)
     err = dc.CreateTransaction(&m)
@@ -337,7 +339,7 @@ func addTransaction(w http.ResponseWriter, r *http.Request) {
     }
     res := make(map[string]interface{})
     res["transaction"] = m
-    successResponder(w,r,res,"") 
+    successResponder(w,r,res,"")
 }
 
 func addPerson(w http.ResponseWriter, r *http.Request) {
@@ -348,7 +350,7 @@ func addPerson(w http.ResponseWriter, r *http.Request) {
         return
     }
     res := make(map[string]interface{})
-    res["person"] = m    
+    res["person"] = m
     successResponder(w,r,res,"")
 }
 
@@ -401,3 +403,4 @@ func successResponder(w http.ResponseWriter, r *http.Request, res map[string]int
         log.Println(err)
     }
 }
+//

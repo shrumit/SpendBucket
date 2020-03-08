@@ -1,10 +1,9 @@
+USE spendbucket;
 -- Initialize
 
-INSERT INTO Users 
-    VALUES (1, 'dummy@example.com', '$2a$10$DX.CmOpStKyqxnBXPw1yvOZHS2wWz.95aLV63ZPZr9yu6atFabCZa');
-
-INSERT INTO Groups VALUES (1, 'Smith residence', 'PLkgLbrYqE', 1);
-INSERT INTO Groups VALUES (2, 'Rick and Birdperson', 'lVishTJCBJ', 1);
+INSERT INTO Users VALUES (1, 'dummy@example.com', '$2a$10$DX.CmOpStKyqxnBXPw1yvOZHS2wWz.95aLV63ZPZr9yu6atFabCZa');
+INSERT INTO Rooms VALUES (1, 'Smith residence', 'PLkgLbrYqE', 1);
+INSERT INTO Rooms VALUES (2, 'Rick and Birdperson', 'lVishTJCBJ', 1);
 
 -- Event
 
@@ -13,7 +12,7 @@ INSERT INTO Groups VALUES (2, 'Rick and Birdperson', 'lVishTJCBJ', 1);
     ON SCHEDULE EVERY 10 MINUTE STARTS '2017-01-01 00:00:00'
     DO BEGIN
         -- cleanup
-        DELETE FROM Groups WHERE createdBy=1 AND groupId!=1 AND groupId!=2;
+        DELETE FROM Rooms WHERE createdBy=1 AND groupId!=1 AND groupId!=2;
         DELETE FROM CanAccess WHERE userId=1 OR groupId=1 OR groupId=2;
         DELETE FROM Transactions WHERE groupId=1 OR groupId=2;
         DELETE FROM Persons WHERE groupId=1 OR groupId=2;

@@ -40,7 +40,7 @@ func (dc *DataControllerMysql) CreateGroup(model *GroupModel, userId int) (err e
     }
     defer tx.Rollback()
 
-    res, err := tx.Exec("insert into Groups (inviteCode, groupName, createdBy) values (?,?,?)", model.InviteCode, model.GroupName, userId)
+    res, err := tx.Exec("insert into Rooms (inviteCode, groupName, createdBy) values (?,?,?)", model.InviteCode, model.GroupName, userId)
     if err != nil {
         return
     }
@@ -62,18 +62,18 @@ func (dc *DataControllerMysql) CreateGroup(model *GroupModel, userId int) (err e
 
 func (dc *DataControllerMysql) GetGroupById(groupId int) (model *GroupModel, err error) {
     model = &GroupModel{}
-    err = dc.db.QueryRow("select * from Groups where groupId=?", groupId).Scan(&model.GroupId, &model.InviteCode, &model.GroupName)
+    err = dc.db.QueryRow("select * from Rooms where groupId=?", groupId).Scan(&model.GroupId, &model.InviteCode, &model.GroupName)
     return
 }
 
 func (dc *DataControllerMysql) GetGroupByInvite(inviteCode string) (model *GroupModel, err error) {
     model = &GroupModel{}
-    err = dc.db.QueryRow("select * from Groups where inviteCode=?", inviteCode).Scan(&model.GroupId, &model.GroupName, &model.InviteCode, &model.CreatedBy)
+    err = dc.db.QueryRow("select * from Rooms where inviteCode=?", inviteCode).Scan(&model.GroupId, &model.GroupName, &model.InviteCode, &model.CreatedBy)
     return
 }
 
 func (dc *DataControllerMysql) UpdateGroup(model *GroupModel) (err error) {
-    _, err = dc.db.Exec("update Groups set inviteCode=?, groupName=? where groupId=?", model.InviteCode, model.GroupName, model.GroupId)
+    _, err = dc.db.Exec("update Rooms set inviteCode=?, groupName=? where groupId=?", model.InviteCode, model.GroupName, model.GroupId)
     return
 }
 
@@ -91,7 +91,7 @@ func (dc *DataControllerMysql) CheckAccess(userId int, groupId int) (err error) 
 }
 
 func (dc *DataControllerMysql) GetAllAccessGroups(userId int) (models []*GroupModel, err error) {
-    rows, err := dc.db.Query("select g.GroupId, inviteCode, groupName from CanAccess c join Groups g on c.GroupId=g.GroupId where userId=?", userId)
+    rows, err := dc.db.Query("select g.GroupId, inviteCode, groupName from CanAccess c join Rooms g on c.GroupId=g.GroupId where userId=?", userId)
     if err != nil {
         return
     }
